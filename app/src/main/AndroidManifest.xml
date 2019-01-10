@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.romain.carnetdentrainement">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/logov6_512"
+        android:label="WorkouTracking"
+        android:supportsRtl="true"
+        android:theme="@style/RedEditor">
+        <activity android:name=".vue.AccueilActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".vue.EntrainementsActivity" />
+        <activity android:name=".vue.ExercicesActivity" />
+        <activity android:name=".vue.SeancesActivity" />
+        <activity android:name=".vue.ProgrammesActivity"></activity>
+    </application>
+
+</manifest>

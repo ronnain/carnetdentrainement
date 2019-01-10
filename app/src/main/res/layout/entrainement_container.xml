@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="#ba000d"
+        tools:layout_editor_absoluteX="10dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text=">  "
+                android:textColor="#ba000d"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txtEntrainement"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="TextView"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="#000"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/imgBtnSettingEntrainement"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:srcCompat="@drawable/ic_settings_points_black" />
+
+
+        </LinearLayout>
+
+        <TableLayout
+            android:id="@+id/tExercices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3dp"
+            android:gravity="center">
+        </TableLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerExercices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="3dp" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
