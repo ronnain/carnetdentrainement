@@ -4,16 +4,16 @@ package com.example.romain.carnetdentrainement.Outils;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class MySQLiteOpenHelper extends SQLiteOpenHelper {
 
     //propriétés modifier
-    private String creation = "create table profil ("
-            + "datemesure TEXT PRIMARY KEY,"
-            + "poids INTEGER NOT NULL,"
-            + "taille INTEGER NOT NULL,"
-            + "age INTEGER NOT NULL,"
-            + "sexe INTEGER NOT NULL);";
+    private String creation1 = "CREATE TABLE `programme` ( `idProgramme` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `nom` TEXT NOT NULL, `ordre` INTEGER NOT NULL ) ";
+    private String creation2 = "CREATE TABLE `entrainement` ( `idEntrainement` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `nom` TEXT NOT NULL, `ordre` INTEGER NOT NULL, `idProgramme` TEXT NOT NULL ); ";
+    private String creation3 = "CREATE TABLE `exercice` ( `idExercice` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `nom` TEXT NOT NULL, `ordre` INTEGER NOT NULL, `idEntrainement` INTEGER NOT NULL ); " ;
+    private String creation4 = "CREATE TABLE `seance` ( `idSeance` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `ordre` INTEGER NOT NULL, `intensite` INTEGER, `commentaire` TEXT, `idExercice` INTEGER NOT NULL ); " ;
+    private String creation5 = "CREATE TABLE `serie` ( `idSerie` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, `rep` INTEGER NOT NULL, `charge` INTEGER NOT NULL, `ordre` INTEGER NOT NULL, `idSeance` INTEGER NOT NULL ); ";
 
     /**
      * Constructeur
@@ -32,7 +32,12 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(creation);
+        Log.d("oncreate ","************************************");
+        sqLiteDatabase.execSQL(creation1);
+        sqLiteDatabase.execSQL(creation2);
+        sqLiteDatabase.execSQL(creation3);
+        sqLiteDatabase.execSQL(creation4);
+        sqLiteDatabase.execSQL(creation5);
 
     }
 

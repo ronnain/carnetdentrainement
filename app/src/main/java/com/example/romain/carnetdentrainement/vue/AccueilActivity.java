@@ -39,35 +39,7 @@ public class AccueilActivity extends AppCompatActivity {
 
     private void init(){
         this.controle = Controle.getInstance(this);
-        /*if(controle.getLesProgrammes().isEmpty()) {
-            this.controle.creerProgramme("Programme 1", this);
-            this.controle.creerProgramme("Programme 2", this);
-            this.controle.creerProgramme("Programme 3", this);
-            this.controle.creerProgramme("Programme 4", this);
-        }
-        if(controle.getLesEntrainements().isEmpty()) {
-            this.controle.creerEntrainement("Haut du corps", this);
-            this.controle.creerEntrainement("Bas du corps", this);
-            this.controle.creerEntrainement("Entrainement 3", this);
-        }
-        if(controle.getLesExercices().isEmpty()) {
-            this.controle.creerExercice("Développé couché haltères incliné", this);
-            this.controle.creerExercice("Développé couché", this);
-            this.controle.creerExercice("Pull Over", this);
-            this.controle.creerExercice("Curl incliné", this);
-            this.controle.creerExercice("Curl marteau", this);
-            this.controle.creerExercice("Abdos à la poulie haute", this);
-        }*/
-        /*if(controle.getLesSeries().isEmpty()) {
-            this.controle.creerSerie(5, 70, this);
-            this.controle.creerSerie(6, 80, this);
-            this.controle.creerSerie(7, 90, this);
-            this.controle.creerSerie(8, 100, this);
-            this.controle.creerSerie(8, 105, this);
-            this.controle.creerSerie(8, 110, this);
-            this.controle.creerSeriesSeance();
-            this.controle.creerSeriesSeance();
-        }*/
+
         if(controle.getLesProgrammes().isEmpty()) {
             this.controle.creerProgramme(0,"Programme 1 Pecs",1 );
             this.controle.creerProgramme(1,"Programme 2 Biceps",2 );

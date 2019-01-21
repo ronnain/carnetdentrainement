@@ -11,7 +11,6 @@ import java.util.List;
 public class Seance implements Parcelable {
 
     //propriétés
-
     private Integer id;
     private Integer ordre;
     private Integer intensite;
@@ -27,6 +26,15 @@ public class Seance implements Parcelable {
         this.intensite = intensite;
         this.commentaire = commentaire;
         this.idExercice = idExercice;
+    }
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getIdExercice() {

@@ -76,6 +76,7 @@ public final class Controle {
     public void creerProgramme(Integer id, String nom, Integer ordre){
         Programme programme = new Programme(id, nom, ordre);
         lesProgrammes.add(programme);
+        accesLocal.ajoutProgramme(programme);
     }
 
     /**
@@ -124,6 +125,7 @@ public final class Controle {
     public void creerEntrainement(Integer id, String nom, Integer ordre, Integer idProgramme, Programme programme){
         Entrainement newEntrainement = new Entrainement(id, nom, ordre, idProgramme);
         programme.addEntrainement(newEntrainement);
+        accesLocal.ajoutEntrainement(newEntrainement);
     }
 
     /**
@@ -166,6 +168,7 @@ public final class Controle {
     public void creerExercice(Integer id, String nom, Integer ordre, Integer idEntrainement, Entrainement entrainement) {
         Exercice newExercice = new Exercice(id, nom, ordre, idEntrainement);
         entrainement.addExercice(newExercice);
+        accesLocal.ajoutExercice(newExercice);
     }
     
     public Exercice creerExerciceIndependant(Integer id, String nom, Integer ordre, Integer idEntrainement){
@@ -228,8 +231,9 @@ public final class Controle {
     }
 
     public void creerSeance(Integer id, Integer ordre, Integer intensite, String commentaire, Integer idExercice, Exercice exercice){
-        Seance newSeance = new Seance(id, ordre, intensite, commentaire, idExercice);
-        exercice.addSeance(newSeance);
+        Seance seance = new Seance(id, ordre, intensite, commentaire, idExercice);
+        exercice.addSeance(seance);
+        accesLocal.ajoutSeance(seance);
     }
 
     public Seance getSeance(Exercice exercice, int index){
@@ -261,8 +265,9 @@ public final class Controle {
     }
 
     public  void creerSerie(Integer id, Integer rep, Integer charge, Integer ordre, Integer id_seance, Seance seance){
-        Serie newSerie = new Serie( id,  rep, charge, ordre, id_seance);
-        seance.addSerie(newSerie);
+        Serie serie = new Serie( id,  rep, charge, ordre, id_seance);
+        seance.addSerie(serie);
+        accesLocal.ajoutSerie(serie);
     }
 
 
