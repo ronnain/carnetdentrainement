@@ -14,10 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".vue.EntrainementsActivity" />
-        <activity android:name=".vue.ExercicesActivity" />
         <activity android:name=".vue.SeancesActivity" />
-        <activity android:name=".vue.ProgrammesActivity"></activity>
     </application>
 
 </manifest>

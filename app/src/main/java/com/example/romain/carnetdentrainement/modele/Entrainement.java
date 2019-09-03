@@ -12,18 +12,20 @@ public class Entrainement implements Parcelable {
 
 
     //propriétés
-    private Integer id;
+    private int id;
     private String nom;
-    private Integer ordre;
-    private Integer idProgramme;
+    private int ordre;
+    private int idProgramme;
     private ArrayList<Exercice> lesExercices = new ArrayList<Exercice>();
-    private static Integer ordrebis = 0;
+    private static int count = 0; // start to 0
 
 
-    public Entrainement(String nom){
+    public Entrainement(int id, String nom, int idProgramme){
+        count++;
+        this.id = id;
         this.nom = nom;
-        ordrebis++;
-        this.ordre = ordrebis;
+        this.ordre = count;
+        this.idProgramme = idProgramme;
     }
 
     public Entrainement(Integer id, String nom, Integer ordre, Integer idProgramme) {
@@ -31,6 +33,7 @@ public class Entrainement implements Parcelable {
         this.nom = nom;
         this.ordre = ordre;
         this.idProgramme = idProgramme;
+        count++;
     }
 
     public ArrayList<Exercice> getLesExercices() {
@@ -74,18 +77,17 @@ public class Entrainement implements Parcelable {
         idProgramme = idProgramme;
     }
 
-    public static Integer getOrdrebis() {
-        return ordrebis;
-    }
-
-    public static void setOrdrebis(Integer ordrebis) {
-        Entrainement.ordrebis = ordrebis;
-    }
-
     public void addExercice(Exercice exercice){
         this.lesExercices.add(exercice);
     }
 
+    public static Integer getCount() {
+        return count;
+    }
+
+    public static void setCount(Integer count) {
+        Entrainement.count = count;
+    }
 
 
     /**

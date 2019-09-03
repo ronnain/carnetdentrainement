@@ -2,6 +2,7 @@ package com.example.romain.carnetdentrainement.Controleur;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.romain.carnetdentrainement.modele.AccesLocal;
 import com.example.romain.carnetdentrainement.modele.Entrainement;
@@ -20,6 +21,7 @@ public final class Controle {
 
     private static Programme programme;
     private ArrayList<Programme> lesProgrammes = new ArrayList<Programme>();
+    private static ArrayList<Programme> lesProgrammesBd = new ArrayList<Programme>();
 
     private static Entrainement entrainement;
     private ArrayList<Entrainement> lesEntrainements = new ArrayList<Entrainement>();
@@ -52,6 +54,7 @@ public final class Controle {
         if(Controle.instance == null){
             Controle.instance = new Controle();
             accesLocal = new AccesLocal(contexte);
+            lesProgrammesBd = accesLocal.getProgrammes();
             //profil = accesLocal.recupDernier();
            /*accesDistant = new AccesDistant();
             //accesDistant.envoi("dernier", new JSONArray());
@@ -62,213 +65,115 @@ public final class Controle {
 
     /////////////////////:Les Programmes ////////////////////////////////////////////////////////////////
 
-    /**
-     * Création programme
-     * @param nom
-     * @param context
-     */
-    public void creerProgramme(String nom, Context context){
-        Programme unprogramme = new Programme(nom);
-        lesProgrammes.add(unprogramme);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
-        //accesLocal.ajout(profil);
-    }
-    public void creerProgramme(Integer id, String nom, Integer ordre){
-        Programme programme = new Programme(id, nom, ordre);
+    public void creerProgramme(String nom){
+        int newId = accesLocal.createProgramme(nom,0);
+        Programme programme = new Programme(newId, nom, 0);
         lesProgrammes.add(programme);
-        accesLocal.ajoutProgramme(programme);
-    }
-
-    /**
-     * Supprimer programme
-     * @param programme à supprimer
-     * @param context
-     */
-    public void supprimerProgramme(Programme programme, Context context){
-        lesProgrammes.remove(programme);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
-    }
-
-
-    public void setProgramme(Programme programme){
-        Controle.programme = programme;
-        //((CalculActivity)contexte).recupProfil();
-    }
-
-    public Programme getProgramme(Integer index) {
-        return   lesProgrammes.get(index);
     }
 
     public ArrayList<Programme> getLesProgrammes() {
+        if(lesProgrammes.isEmpty()){
+            lesProgrammes = lesProgrammesBd;
+        }
         return lesProgrammes;
     }
 
+    public void setProgrammeName(int index, String newName){
+        lesProgrammes.get(index).setNom(newName);
+        accesLocal.updateProgrammeName(newName, lesProgrammes.get(index).getId());
+    }
+
+    public void removeProgramme(int idProgramme, int index){ //To improve
+        lesProgrammes.remove(index);
+        accesLocal.removeProgramme(idProgramme);
+    }
 
     /////////////////////:Les entrainements ////////////////////////////////////////////////////////////////
 
-    public ArrayList<Entrainement> getLesEntrainements() {
-        return lesEntrainements;
+    public ArrayList<Entrainement> getEntrainements(int idProgramme) {
+        return accesLocal.getEntrainements(idProgramme);
+    }
+
+    public void createEntrainement(String nom, int idProgramme, int index){
+        int newId = accesLocal.addEntrainement(nom, 0, idProgramme);
+        Entrainement newEntrainement = new Entrainement(newId, nom, idProgramme);
+        lesProgrammes.get(index).getLesEntrainements().add(newEntrainement);
+    }
+
+    public void setEntrainementName(String newName, int idEntrainement, int positionEntrainement, int positionProgramme){
+        accesLocal.updateEntrainementName(newName, idEntrainement);
+    }
+
+    public void removeEntrainement(int idEntrainement){ //to improve
+        accesLocal.removeEntrainement(idEntrainement);
     }
 
 
-    /**
-     * Création programme
-     * @param nom
-     * @param context
-     */
-    public void creerEntrainement(String nom, Context context){
-        Entrainement uneEntrainement = new Entrainement(nom);
-        lesEntrainements.add(uneEntrainement);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
-    }
-
-    public void creerEntrainement(Integer id, String nom, Integer ordre, Integer idProgramme, Programme programme){
-        Entrainement newEntrainement = new Entrainement(id, nom, ordre, idProgramme);
-        programme.addEntrainement(newEntrainement);
-        accesLocal.ajoutEntrainement(newEntrainement);
-    }
-
-    /**
-     * Supprimer entrainement
-     * @param entrainement à supprimer
-     * @param context
-     */
-    public void supprimerEntrainement(Entrainement entrainement, Context context){
-        lesEntrainements.remove(entrainement);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
-    }
-
-
-    public void setEntrainement(Entrainement entrainement){
-        Controle.entrainement = entrainement;
-        //((CalculActivity)contexte).recupProfil();
-    }
-
-    public Entrainement getEntrainement(Programme programme, Integer indexEntrainement){
-        return  programme.getLesEntrainements().get(indexEntrainement);
-    }
     /////////////////////:Les Exercices ////////////////////////////////////////////////////////////////
 
-    public ArrayList<Exercice> getLesExercices() {
-        return lesExercices;
+    public ArrayList<Exercice> getExercices(int idEntrainement) {
+        return accesLocal.getExercices(idEntrainement);
     }
 
 
-    /**
-     * Création programme
-     * @param nom
-     * @param context
-     */
-    public void creerExercice(String nom, Context context){
-        Exercice unExercice = new Exercice(nom);
-        lesExercices.add(unExercice);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
-    }
-
-    public void creerExercice(Integer id, String nom, Integer ordre, Integer idEntrainement, Entrainement entrainement) {
-        Exercice newExercice = new Exercice(id, nom, ordre, idEntrainement);
-        entrainement.addExercice(newExercice);
-        accesLocal.ajoutExercice(newExercice);
-    }
-    
-    public Exercice creerExerciceIndependant(Integer id, String nom, Integer ordre, Integer idEntrainement){
-        Exercice newExercice = new Exercice(id, nom, ordre, idEntrainement);
+    public Exercice addExercice(String name, int idEntrainement, Entrainement entrainement){
+        int newId = accesLocal.addExercice(name, 0, idEntrainement);
+        Exercice newExercice = new Exercice(newId, name, idEntrainement);
+        entrainement.getLesExercices().add(newExercice); //useful?
         return newExercice;
     }
-
-    public void supprimerExercice(Exercice exercice, Context context){
-        lesExercices.remove(exercice);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
-    }
-
-    public void setExercice(Exercice exercice){
-        Controle.exercice = exercice;
-        //((CalculActivity)contexte).recupProfil();
-    }
-
-    public void setExerciceSelected(Exercice exerciceSelected){
-        Controle.exerciceSelected = exerciceSelected;
-    }
-    public Exercice getExerciceSelected(){
-        return  exerciceSelected;
-    }
-
-    public Exercice getExercice(Entrainement entrainement, int indexExercice){
-        return entrainement.getLesExercices().get(indexExercice);
-    }
-
-    
-
-    
-    
-    
     
     /////////////////////:Les séances ////////////////////////////////////////////////////////////////
 
-    public ArrayList<Seance> getlesSeancess() {
-        return lesSeances;
+    public ArrayList<Seance> getSeances(int idExercice) {
+        return accesLocal.getSeances(idExercice);
     }
 
-    /**
-     * Création programme
-     * @param
-     * @param
-     */
-    public void creerSeance(){
-        Seance seance = new Seance(lesSeries);
-        lesSeances.add(seance);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
+    public Seance addSeance(int rep, int charge, int idExercice){
+        int newIdSeance = accesLocal.addSeance( 0, idExercice);
+        addSerie(rep, charge, 0, newIdSeance);
+        Seance newSeance = new Seance(newIdSeance, 0, idExercice);
+        return newSeance;
     }
 
-
-
-    public void creerSeriesSeance(Serie s){
-        ArrayList<Serie> lesSeries = new ArrayList<Serie>();
-        lesSeries.add(s);
-        Seance uneSerieSeance = new Seance(lesSeries);
-        lesSeances.add(uneSerieSeance);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
+    public void updateSeance(int idSeance, int intensity, String coment){
+        accesLocal.updateSeance(idSeance, intensity, coment);
     }
 
-    public void creerSeance(Integer id, Integer ordre, Integer intensite, String commentaire, Integer idExercice, Exercice exercice){
-        Seance seance = new Seance(id, ordre, intensite, commentaire, idExercice);
-        exercice.addSeance(seance);
-        accesLocal.ajoutSeance(seance);
+    public void removeSeance(int idSeance){
+        accesLocal.removeSeance(idSeance);
     }
 
-    public Seance getSeance(Exercice exercice, int index){
-        return  exercice.getLesSeances().get(index);
+    public int getLastIdSeance() {
+        return accesLocal.getLastIdSeance();
     }
 
 
-    /////////////////////Une Série ////////////////////////////////////////////////////////////////
+    ///////////////////// Séries ////////////////////////////////////////////////////////////////
 
-    public ArrayList<Serie> getLesSeries() {
-        return lesSeries;
+    public Serie addSerie(int rep, int charge, int ordre, int idSeance){
+         int newId = accesLocal.addSerie(rep, charge, ordre, idSeance);
+        Serie newSerie = new Serie(newId, rep, charge, ordre, idSeance);
+        return newSerie;
     }
 
-
-    /**
-     * Création programme
-     * @param
-     * @param context
-     */
-    public void creerSerie(Integer nbrep,Integer charge, Context context){
-        Serie uneSerie = new Serie(nbrep, charge);
-        lesSeries.add(uneSerie);
-        //accesDistant.envoi("enreg", unprofil.convertToJSONArray());
+    public ArrayList<Serie> getSeries(int idSeance) {
+        return accesLocal.getSeries(idSeance);
     }
 
-    public void setSerie(Serie serie){
-        Controle.serie = serie;
-        //((CalculActivity)contexte).recupProfil();
+    public Serie getLastSerieOfSeance(int idSeance) {
+        return accesLocal.getLastSerieOfSeance(idSeance);
     }
 
-    public  void creerSerie(Integer id, Integer rep, Integer charge, Integer ordre, Integer id_seance, Seance seance){
-        Serie serie = new Serie( id,  rep, charge, ordre, id_seance);
-        seance.addSerie(serie);
-        accesLocal.ajoutSerie(serie);
+    public Serie getLastSerieOfSeanceByExercice(int idExercice){
+        return accesLocal.getLastSerieOfSeanceByExercice(idExercice);
     }
 
+    public void updateSerie(int rep, int weight, int idSerie){
+        accesLocal.updateSerie(rep, weight, idSerie);
+    }
 
+    public void delSerie(int idSerie){
+        accesLocal.delSerie(idSerie);
+    }
 }

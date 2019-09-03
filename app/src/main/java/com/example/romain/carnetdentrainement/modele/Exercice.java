@@ -15,21 +15,24 @@ public class Exercice  implements Parcelable   {
     private Integer ordre;
     private Integer idEntrainement;
     private ArrayList<Seance> lesSeances = new ArrayList<Seance>();
-    private static Integer ordrebis = 0;
+    private static Integer count = 0; // start to 0
 
 
-    public Exercice(String nom){
+
+    public Exercice(int id, String nom, int idEntrainement){
+        count++;
+        this.id = id;
         this.nom = nom;
-        ordrebis++;
-        this.ordre = ordrebis;
+        this.ordre = count;
+        this.idEntrainement = idEntrainement;
     }
 
-    public Exercice(Integer id, String nom, Integer ordre, Integer idEntrainement) {
+    public Exercice(Integer id, String nom, Integer ordre, Integer idEntrainement) { //Useless?
         this.id = id;
         this.nom = nom;
         this.ordre = ordre;
         this.idEntrainement = idEntrainement;
-
+        count++;
     }
 
     public String getNom() {
@@ -62,14 +65,6 @@ public class Exercice  implements Parcelable   {
 
     public void setLesSeances(ArrayList<Seance> lesSeances) {
         this.lesSeances = lesSeances;
-    }
-
-    public static Integer getOrdrebis() {
-        return ordrebis;
-    }
-
-    public static void setOrdrebis(Integer ordrebis) {
-        Exercice.ordrebis = ordrebis;
     }
 
     public Integer getId() {

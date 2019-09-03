@@ -16,13 +16,15 @@ public class Serie implements  Parcelable {
     private Integer charge;
     private Integer ordre;
     private Integer idSeance;
+    private static int count = 0; // start to 0
 
     public Serie(Integer nbrep, Integer charge) {
         this.rep = nbrep;
         this.charge = charge;
     }
 
-    public Serie(Integer id, Integer rep, Integer charge, Integer ordre, Integer idSeance) {
+    public Serie(int id, int rep, int charge, int ordre, int idSeance){
+        count++;
         this.id = id;
         this.rep = rep;
         this.charge = charge;

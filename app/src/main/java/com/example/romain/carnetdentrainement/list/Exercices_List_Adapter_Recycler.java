@@ -31,6 +31,7 @@ public class Exercices_List_Adapter_Recycler extends RecyclerView.Adapter<Recycl
     private Context contexte;
     private Entrainement entrainement;
     private int size;
+    private int idEntrainement;
     public  final static  String EXTRA_MESSAGE = "com.ltm.ltmactionbar.MESSAGE";
 
     private static final int FOOTER_VIEW = 1;
@@ -154,7 +155,7 @@ public class Exercices_List_Adapter_Recycler extends RecyclerView.Adapter<Recycl
             cardViewExercice = itemView.findViewById(R.id.cardViewExercice);
             imgExercice = itemView.findViewById(R.id.imgExercice);
             lytCardExercice = itemView.findViewById(R.id.lytCardExercice);
-            btnAddExercice = itemView.findViewById(R.id.btnAddExercice);
+            btnAddExercice = itemView.findViewById(R.id.btnAddEntite);
 
         }
 
@@ -162,7 +163,7 @@ public class Exercices_List_Adapter_Recycler extends RecyclerView.Adapter<Recycl
             // bindView() method to implement actions
             txtExerciceName.setText(lesExercices.get(position).getNom());
             itemView.setTag(lesExercices.get(position));
-            afficherExerciceCardView(cardViewExercice, position);
+            afficherExerciceCardView(cardViewExercice, lesExercices.get(position).getId());
         }
 
         public void bindFooterView(int position) {
@@ -176,9 +177,11 @@ public class Exercices_List_Adapter_Recycler extends RecyclerView.Adapter<Recycl
         this.contexte = contexte;
         this.controle = controle;
         this.inflater = LayoutInflater.from(contexte);
-        this.lesExercices = entrainement.getLesExercices();
         this.entrainement = entrainement;
+        this.idEntrainement = entrainement.getId();
+        this.lesExercices = controle.getExercices(this.idEntrainement);
         this.size = lesExercices.size()+1;
+
     }
 
     private void afficherExerciceCardView(final CardView cardExercice, final Integer position) {
@@ -187,7 +190,7 @@ public class Exercices_List_Adapter_Recycler extends RecyclerView.Adapter<Recycl
             public void onClick(View v1) {
                 Intent intent = new Intent(contexte, SeancesActivity.class);
                 //intent.putExtra("entrainement",entrainement);
-                intent.putExtra(AccueilActivity.EXTRA_MESSAGE_EXERCICE_ID,position.toString());
+                intent.putExtra(AccueilActivity.EXTRA_MESSAGE_EXERCICE_ID, position.toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
                 contexte.startActivity(intent);
 
@@ -206,29 +209,24 @@ public class Exercices_List_Adapter_Recycler extends RecyclerView.Adapter<Recycl
                 final android.support.v7.app.AlertDialog dialog = mBuilder.create();
                 final Button btnValid = (Button) mView.findViewById(R.id.btnValid);
                 final TextView txtDialogTitre = (TextView) mView.findViewById(R.id.txtDialogTitre);
-                final EditText editNomExercice = (EditText) mView.findViewById(R.id.editNomEntite);
+                final EditText editNomEntite = (EditText) mView.findViewById(R.id.editNomEntite);
 
                 txtDialogTitre.setText("Ajouter un Exercice");
-
 
                 btnValid.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v1) {
-                        String nomNewExercice = editNomExercice.getText().toString().trim();
-                        if (!nomNewExercice.isEmpty()) {
-                            controle.creerExercice(nomNewExercice, contexte);
-                            size++;
-                            //lesExercices = controle.getLesExercices();
-                            //notifyItemInserted(currentPosition);
+                        String nameNewEntite = editNomEntite.getText().toString().trim();
+                        if (!nameNewEntite.isEmpty()) {
+                            lesExercices.add(controle.addExercice(nameNewEntite, idEntrainement, entrainement));
                             notifyItemInserted(position);
-
-
-                            Toast.makeText(contexte, "Exercice : " + nomNewExercice + " a été ajouté.", Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                            Toast.makeText(contexte, "Exercice : " + nameNewEntite + " a été ajouté.", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(contexte, "Aucun nom n'a été entré.", Toast.LENGTH_SHORT).show();
                         }
-
                         dialog.hide();
+
 
                     }
                 });

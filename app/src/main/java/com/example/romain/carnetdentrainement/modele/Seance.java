@@ -17,14 +17,23 @@ public class Seance implements Parcelable {
     private String commentaire;
     private Integer idExercice;
     private ArrayList<Serie> lesSeries = new ArrayList<Serie>();
+    private static Integer count = 0; // start to 0
 
 
 
-    public Seance(Integer id, Integer ordre, Integer intensite, String commentaire, Integer idExercice) {
+    public Seance(int id, int ordre, int intensite, String commentaire, int idExercice) {
+        count++;
         this.id = id;
         this.ordre = ordre;
         this.intensite = intensite;
         this.commentaire = commentaire;
+        this.idExercice = idExercice;
+    }
+
+    public Seance(int id, int ordre, int idExercice) {
+        count++;
+        this.id = id;
+        this.ordre = ordre;
         this.idExercice = idExercice;
     }
 
@@ -84,12 +93,15 @@ public class Seance implements Parcelable {
         lesSeries.add(serie);
     }
 
-
-    public Seance(ArrayList<Serie> lesSeries){
-        this.lesSeries = lesSeries;
-        ordrebis++;
-        this.ordre = ordrebis;
+    public static Integer getCount() {
+        return count;
     }
+
+    public static void setCount(Integer count) {
+        Seance.count = count;
+    }
+
+
 
 
 

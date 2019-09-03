@@ -15,19 +15,14 @@ public class Programme {
     private Integer id;
     private String nom;
     private Integer ordre;
-    private ArrayList<Entrainement> lesEntrainements = new ArrayList<Entrainement>();
-    private static Integer ordrebis = 0;
-
-    public Programme(String nom){
-        this.nom = nom;
-        ordrebis++;
-        this.ordre = ordrebis;
-    }
+    private ArrayList<Entrainement> lesEntrainements = new ArrayList<Entrainement>(); //Useless
+    private static Integer count = 0; // start to 0
 
     public Programme(Integer id, String nom, Integer ordre) {
         this.id = id;
         this.nom = nom;
         this.ordre = ordre;
+        count++;
     }
 
     public Integer getId() {
@@ -55,6 +50,7 @@ public class Programme {
     }
 
     public ArrayList<Entrainement> getLesEntrainements() {
+
         return lesEntrainements;
     }
 
@@ -68,11 +64,6 @@ public class Programme {
     public void supprimerEntrainement(Entrainement entrainement){
         this.lesEntrainements.remove(entrainement);
     }
-
-
-
-
-
 
     /**
      Convertion du programme au format JSONAraay

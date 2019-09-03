@@ -7,10 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.romain.carnetdentrainement.Controleur.Controle;
 import com.example.romain.carnetdentrainement.R;
@@ -139,7 +142,7 @@ public class Accueil_List_Adapter_Recycler  extends RecyclerView.Adapter<Recycle
 
         TextView txtProgramme;
         ImageButton imgBtnSettingProgramme;
-        ImageButton imgBtnSettingEntrainement;
+        LinearLayout lytAddEntrainement;
         LinearLayout lytEntrainements;
         RecyclerView mRecyclerView;
         RecyclerView.Adapter mAdapter;
@@ -150,41 +153,45 @@ public class Accueil_List_Adapter_Recycler  extends RecyclerView.Adapter<Recycle
             txtProgramme = (TextView) itemView.findViewById(R.id.txtProgramme);
             imgBtnSettingProgramme = (ImageButton) itemView.findViewById(R.id.imgBtnSettingProgramme);
             lytEntrainements = (LinearLayout) itemView.findViewById(R.id.lytEntrainements);
+            lytAddEntrainement= (LinearLayout) itemView.findViewById(R.id.lytAddEntrainement);
         }
 
         public void bindView(int position) {
             // bindView() method to implement actions
-            txtProgramme.setText(lesProgrammes.get(position).getNom());
-            itemView.setTag(lesProgrammes.get(position));
-            addChildEntrainements(lesProgrammes.get(position));
-            //afficherExerciceCardView(cardViewExercice);
+            Programme currentProgramme = lesProgrammes.get(position);
+            txtProgramme.setText(currentProgramme.getNom());
+            itemView.setTag(currentProgramme);
+            if(lytEntrainements.getChildCount()>0){
+                lytEntrainements.removeAllViews();;
+            }
+            if(lytAddEntrainement.getChildCount()>0){
+                lytAddEntrainement.removeAllViews();;
+            }
+            addChildEntrainements(currentProgramme.getId(), position);
+            addBtnAddEntite(position, "Entrainement", currentProgramme.getId());
+            initBtnSettingProgramme(currentProgramme.getNom(), position, currentProgramme.getId());
         }
 
-        /*public void bindFooterView(int position) {
-            addBtnAddExercice(btnAddExercice, position);
-        }*/
-
-
-
-        private void addChildEntrainements(Programme programme) {
+        private void addChildEntrainements(int idProgramme, int position) {
 
             //ArrayList<Entrainement> lesEntrainements = controle.getLesEntrainements();
-            ArrayList<Entrainement> lesEntrainements = programme.getLesEntrainements();
+            ArrayList<Entrainement> lesEntrainements = controle.getEntrainements(idProgramme);
             //Collections.sort(lesProgrammes, Collections.<Programme>reverseOrder());
             if (lesEntrainements != null) {
                 Entrainement entrainement;
                 for (int k = 0; k < lesEntrainements.size(); k++) {
                     View child = inflater.inflate(R.layout.entrainement_container, null); //Regarder si route != null
-                    imgBtnSettingEntrainement = (ImageButton) child.findViewById(R.id.imgBtnSettingEntrainement);
+                    ImageButton imgBtnSettingEntrainement = (ImageButton) child.findViewById(R.id.imgBtnSettingEntrainement);
                     TextView txtEntrainement = (TextView) child.findViewById(R.id.txtEntrainement);
 
                     entrainement = lesEntrainements.get(k);
+
+                    initBtnSettingEntrainement(imgBtnSettingEntrainement, txtEntrainement, child, entrainement.getNom(), entrainement.getId(), k, position);
+
                     addChildsExercicesHorizontalRecycler(child, entrainement); // Add horizontal recyclerView for exercices in AccueilActivity
 
                     txtEntrainement.setText(entrainement.getNom());
                     lytEntrainements.addView(child);
-
-                    //initBtnSettingsEntrainement(holder, lesEntrainements, k);
                 }
             }
         }
@@ -201,6 +208,136 @@ public class Accueil_List_Adapter_Recycler  extends RecyclerView.Adapter<Recycle
 
         }
 
+        private void addBtnAddEntite(final int position, final String name, final Integer idProgramme) {
+            ImageButton imgBtnAddEntite = new ImageButton(contexte);
+            imgBtnAddEntite.setImageResource(R.drawable.btn_add_24dp);
+
+            imgBtnAddEntite.setOnClickListener(new View.OnClickListener() {
+                public void onClick(final View v) {
+                    android.support.v7.app.AlertDialog.Builder mBuilder = new android.support.v7.app.AlertDialog.Builder(contexte);
+                    View mView = inflater.inflate(R.layout.dialog_add_entite, null);
+
+                    mBuilder.setView(mView);
+                    final android.support.v7.app.AlertDialog dialog = mBuilder.create();
+                    final Button btnValid = (Button) mView.findViewById(R.id.btnValid);
+                    final TextView txtDialogTitre = (TextView) mView.findViewById(R.id.txtDialogTitre);
+                    final EditText editNomEntite = (EditText) mView.findViewById(R.id.editNomEntite);
+
+                    txtDialogTitre.setText("Ajouter un "+ name);
+
+                    btnValid.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v1) {
+                            String nameNewEntite = editNomEntite.getText().toString().trim();
+                            if (!nameNewEntite.isEmpty()) {
+                                controle.createEntrainement(nameNewEntite, idProgramme, position);
+                                notifyItemInserted(position);
+                                notifyDataSetChanged();
+                                Toast.makeText(contexte, name+ ": " + nameNewEntite + " a été ajouté.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(contexte, "Aucun nom n'a été entré.", Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.hide();
+
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+            lytAddEntrainement.addView(imgBtnAddEntite);
+        }
+
+        private void initBtnSettingProgramme(final String name, final int position, final int idProgramme){
+            imgBtnSettingProgramme.setOnClickListener(new View.OnClickListener() {
+                public void onClick(final View v) {
+                    android.support.v7.app.AlertDialog.Builder mBuilder = new android.support.v7.app.AlertDialog.Builder(contexte);
+                    View mView = inflater.inflate(R.layout.dialog_setting, null);
+                    mBuilder.setView(mView);
+                    final android.support.v7.app.AlertDialog dialog = mBuilder.create();
+
+                    final Button btnValid = (Button) mView.findViewById(R.id.btnValid);
+                    final Button btnRemove = (Button) mView.findViewById(R.id.btnRemove);
+                    final TextView txtDialogTitre = (TextView) mView.findViewById(R.id.txtDialogTitre);
+                    final EditText editNomEntite = (EditText) mView.findViewById(R.id.editNomEntite);
+
+                    txtDialogTitre.setText("Mettre à jour le Programme");
+                    editNomEntite.setText(name);
+                    btnValid.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v1) {
+                            String nameNewEntite = editNomEntite.getText().toString().trim();
+                            if (!nameNewEntite.isEmpty()) {
+                                controle.setProgrammeName(position, nameNewEntite);
+                                notifyDataSetChanged();
+                                Toast.makeText(contexte, name+ " -> " + nameNewEntite + "", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(contexte, "Aucun nom n'a été entré.", Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.hide();
+                        }
+                    });
+                    btnRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v1) {
+                            controle.removeProgramme(idProgramme, position);
+                            notifyItemRemoved(position);
+                            notifyDataSetChanged();
+                            Toast.makeText(contexte, "Suppression du programme "+name, Toast.LENGTH_SHORT).show();
+                            dialog.hide();
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+        }
+
+        private void initBtnSettingEntrainement(
+                ImageButton imgBtnSettingEntrainement, final TextView txtEntrainement, final View child,
+                final String name, final int idEntrainement, final int positionEntrainement,
+                final int positionProgramme){
+            imgBtnSettingEntrainement.setOnClickListener(new View.OnClickListener() {
+                public void onClick(final View v) {
+                    android.support.v7.app.AlertDialog.Builder mBuilder = new android.support.v7.app.AlertDialog.Builder(contexte);
+                    View mView = inflater.inflate(R.layout.dialog_setting, null);
+                    mBuilder.setView(mView);
+                    final android.support.v7.app.AlertDialog dialog = mBuilder.create();
+
+                    final Button btnValid = (Button) mView.findViewById(R.id.btnValid);
+                    final Button btnRemove = (Button) mView.findViewById(R.id.btnRemove);
+                    final TextView txtDialogTitre = (TextView) mView.findViewById(R.id.txtDialogTitre);
+                    final EditText editNomEntite = (EditText) mView.findViewById(R.id.editNomEntite);
+
+                    txtDialogTitre.setText("Mettre à jour l'entrainement");
+                    editNomEntite.setText(name);
+                    btnValid.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v1) {
+                            String nameNewEntite = editNomEntite.getText().toString().trim();
+                            if (!nameNewEntite.isEmpty()) {
+                                controle.setEntrainementName(nameNewEntite, idEntrainement, positionEntrainement, positionProgramme);
+                                txtEntrainement.setText(nameNewEntite);
+                                notifyDataSetChanged();
+                                Toast.makeText(contexte, name+ " -> " + nameNewEntite + "", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(contexte, "Aucun nom n'a été entré.", Toast.LENGTH_SHORT).show();
+                            }
+                            dialog.hide();
+                        }
+                    });
+                    btnRemove.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v1) {
+                            controle.removeEntrainement(idEntrainement);
+                            lytEntrainements.removeView(child);
+                            notifyDataSetChanged();
+                            Toast.makeText(contexte, "Suppression de l'entrainement "+name, Toast.LENGTH_SHORT).show();
+                            dialog.hide();
+                        }
+                    });
+                    dialog.show();
+                }
+            });
+        }
     }
     // Provide a suitable constructor (depends on the kind of dataset)
     public Accueil_List_Adapter_Recycler(Context contexte, Controle controle) {

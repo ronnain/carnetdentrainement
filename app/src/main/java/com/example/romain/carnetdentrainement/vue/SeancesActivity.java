@@ -17,15 +17,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.romain.carnetdentrainement.Controleur.Controle;
 import com.example.romain.carnetdentrainement.R;
-import com.example.romain.carnetdentrainement.list.Seance_List_Adapter;
 import com.example.romain.carnetdentrainement.list.Seances_List_Adapter_Recycler;
-import com.example.romain.carnetdentrainement.modele.Entrainement;
 import com.example.romain.carnetdentrainement.modele.Exercice;
 import com.example.romain.carnetdentrainement.modele.Serie;
 import com.example.romain.carnetdentrainement.modele.Seance;
@@ -40,6 +37,7 @@ public class SeancesActivity extends AppCompatActivity {
     private int idExercice;
     private Exercice exercice;
     private ArrayList<Seance> lesSeances = null;
+    private Seances_List_Adapter_Recycler adapterSeances;
     public CountDownTimer mainTimer;
     public CountDownTimer secondTimer;
     private int mainTimeTimer = 5000;
@@ -52,12 +50,12 @@ public class SeancesActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         //entrainement = (Entrainement) intent.getParcelableExtra("entrainement");
-        String messageExerciceId = intent.getStringExtra(AccueilActivity.EXTRA_MESSAGE_EXERCICE_ID);
-        idExercice = Integer.parseInt(messageExerciceId);
+        String messageIdExercice = intent.getStringExtra(AccueilActivity.EXTRA_MESSAGE_EXERCICE_ID);
+        idExercice = Integer.parseInt(messageIdExercice);
 
         init();
-        creerListe();
-        addObjectifContainer();
+        addRecyclerSeances();
+        //addObjectifContainer();
 
     }
 
@@ -65,86 +63,32 @@ public class SeancesActivity extends AppCompatActivity {
 
     private void init(){
         this.controle = Controle.getInstance(this);
-        /*if(controle.getLesSeries().isEmpty()) {
-            this.controle.creerSerie(5, 70, this);
-            this.controle.creerSerie(6, 80, this);
-            this.controle.creerSerie(7, 90, this);
-            this.controle.creerSerie(8, 100, this);
-            this.controle.creerSerie(8, 105, this);
-            this.controle.creerSerie(8, 110, this);
-            this.controle.creerSeance();
-            this.controle.creerSeance();
-        }*/
-        exercice = controle.creerExerciceIndependant(0,"Développé couché", 1, 1);
-        if(exercice.getLesSeances().isEmpty() ){
-            controle.creerSeance(0, 1, 5, "Yo, c'était facile", 0, exercice);
-            controle.creerSeance(1, 2, 7, "", 0, exercice);
-            controle.creerSeance(2, 3, 9, "Yo, c'était pas facile", 0, exercice);
-
-            controle.creerSerie(0, 10, 70, 1, 0, exercice.getLesSeances().get(0));
-            controle.creerSerie(1, 10, 70, 2, 0, exercice.getLesSeances().get(0));
-            controle.creerSerie(2, 10, 70, 3, 0, exercice.getLesSeances().get(0));
-            controle.creerSerie(3, 10, 70, 4, 0, exercice.getLesSeances().get(0));
-
-            controle.creerSerie(4, 8, 70, 1, 1, exercice.getLesSeances().get(1));
-            controle.creerSerie(5, 8, 70, 2, 1, exercice.getLesSeances().get(1));
-            controle.creerSerie(6, 10, 60, 3, 1, exercice.getLesSeances().get(1));
-            controle.creerSerie(7, 10, 60, 4, 1, exercice.getLesSeances().get(1));
-
-
-            controle.creerSerie(8, 8, 70, 1, 2, exercice.getLesSeances().get(2));
-            controle.creerSerie(9, 10, 70, 2, 2, exercice.getLesSeances().get(2));
-            controle.creerSerie(10, 12, 60, 3, 2, exercice.getLesSeances().get(2));
-            controle.creerSerie(11, 12, 60, 4, 2, exercice.getLesSeances().get(2));
-
-
-        }
-        //exercice = controle.getExercice(entrainement,idExercice );
-
+        initbtnAddSeance();
         initbtnChronoSetting();
 }
 
     /**
      * créer liste adpater
      */
-    private void creerListe(){
-        /*ArrayList<Seance> lesSeanceSeance = controle.getSeriesSeance();
-        //Collections.sort(lesProgrammes, Collections.<Programme>reverseOrder());
-        if(lesSeanceSeance != null) {
-            ListView lstSeries = (ListView) findViewById(R.id.lstSeries);
-            Seance_List_Adapter adapter = new Seance_List_Adapter(this, controle, lesSeanceSeance);
-            lstSeries.setAdapter(adapter);
-            initbtnAdd(adapter);
-        }*/
-            /*if(exerciceSelected.getLesSeances() != null){
-                ArrayList<Seance> lesSeances = exerciceSelected.getLesSeances();
-            }*/
+    private void addRecyclerSeances(){
 
-            //Collections.sort(lesProgrammes, Collections.<Programme>reverseOrder());
+        RecyclerView mRecyclerView;
+        Seances_List_Adapter_Recycler mAdapter;
+        RecyclerView.LayoutManager mLayoutManager;
 
-        lesSeances = exercice.getLesSeances();
-            if(lesSeances != null){
-            /*ListView lstPrograms = (ListView) findViewById(R.id.lstPrograms);
-            Accueil_List_Adapter adapter = new Accueil_List_Adapter(this, controle, lesProgrammes);
-            lstPrograms.setAdapter(adapter);*/
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerSeances);
 
-                RecyclerView mRecyclerView;
-                RecyclerView.Adapter mAdapter;
-                RecyclerView.LayoutManager mLayoutManager;
+        mLayoutManager =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-                mRecyclerView = (RecyclerView) findViewById(R.id.recyclerSeances);
+        mAdapter = new Seances_List_Adapter_Recycler(this, controle, idExercice);
+        mRecyclerView.setAdapter(mAdapter);
 
-                mLayoutManager =new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-                mRecyclerView.setLayoutManager(mLayoutManager);
-
-                mAdapter = new Seances_List_Adapter_Recycler(this, controle, exercice);
-                mRecyclerView.setAdapter(mAdapter);
-            }
-
+        this.adapterSeances = mAdapter;
     }
 
 
-    private void initbtnAdd(final Seance_List_Adapter adapter){
+    private void initbtnAddSeance(){
         FloatingActionButton btnAdd = (FloatingActionButton) findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener(new View.OnClickListener() {
             public void onClick(final View v) {
@@ -157,9 +101,15 @@ public class SeancesActivity extends AppCompatActivity {
                 final EditText editRep = (EditText) mView.findViewById(R.id.editRep);
                 final EditText editCharge = (EditText) mView.findViewById(R.id.editCharge);
                 final Button btnValid = (Button) mView.findViewById(R.id.btnValid);
-                final TextView txtRepAdd = (TextView) mView.findViewById(R.id.txtRep);
-                final TextView txtChargeAdd = (TextView) mView.findViewById(R.id.txtCharge);
+                final Button btnRemove = (Button) mView.findViewById(R.id.btnRemove);
 
+                btnRemove.setVisibility(View.GONE);
+
+                Serie lastSerie = controle.getLastSerieOfSeanceByExercice(idExercice);
+                if(lastSerie != null){
+                    editRep.setText(lastSerie.getRep().toString());
+                    editCharge.setText(lastSerie.getCharge().toString());
+                }
 
                 btnValid.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -167,11 +117,10 @@ public class SeancesActivity extends AppCompatActivity {
                         if(editRep.getText().toString().isEmpty() || editCharge.getText().toString().isEmpty()){
                             Toast.makeText(SeancesActivity.this, "Veuillez renseigner le nombre de répétitions et la charge utlisée.", Toast.LENGTH_SHORT).show();
                         }else {
-                            Toast.makeText(SeancesActivity.this, "Vas-y molo poto", Toast.LENGTH_SHORT).show();
-                            //controle.creerSerie(Integer.parseInt(editRep.getText().toString()), Integer.parseInt(editCharge.getText().toString()), SeancesActivity.this);
-                            Serie serie = new Serie(Integer.parseInt(editRep.getText().toString()),Integer.parseInt(editCharge.getText().toString()));
-                            controle.creerSeriesSeance(serie);
-                            adapter.notifyDataSetChanged();
+                            //Create new seance and the associate serie and add it to the seances array of the current adpater
+                            adapterSeances.addSeance(controle.addSeance(Integer.parseInt(editRep.getText().toString()), Integer.parseInt(editCharge.getText().toString()), idExercice));
+                            adapterSeances.notifyItemInserted(0);
+                            Toast.makeText(SeancesActivity.this, "Nouvelle séance créée.", Toast.LENGTH_SHORT).show();
                             dialog.hide();
                         }
                     }

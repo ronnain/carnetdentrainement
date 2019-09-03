@@ -9,16 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.romain.carnetdentrainement.Controleur.Controle;
 import com.example.romain.carnetdentrainement.R;
-import com.example.romain.carnetdentrainement.list.Accueil_List_Adapter;
 import com.example.romain.carnetdentrainement.list.Accueil_List_Adapter_Recycler;
-import com.example.romain.carnetdentrainement.list.Exercices_List_Adapter_Recycler;
-import com.example.romain.carnetdentrainement.modele.Entrainement;
-import com.example.romain.carnetdentrainement.modele.Exercice;
 import com.example.romain.carnetdentrainement.modele.Programme;
 
 import java.util.ArrayList;
@@ -39,26 +34,11 @@ public class AccueilActivity extends AppCompatActivity {
 
     private void init(){
         this.controle = Controle.getInstance(this);
-
-        if(controle.getLesProgrammes().isEmpty()) {
-            this.controle.creerProgramme(0,"Programme 1 Pecs",1 );
-            this.controle.creerProgramme(1,"Programme 2 Biceps",2 );
-            this.controle.creerProgramme(2,"Programme 3 Null",3 );
-            this.controle.creerProgramme(3,"Programme 4 A chier",4 );
-
-
-            creerProgrammeTest(0);
-            creerProgrammeTest(1);
-            creerProgrammeTest(2);
-            creerProgrammeTest(3);
-           }
-
         initbtnAdd();
-
     }
 
     /**
-     * créer liste adpater
+     * crataion liste adpater
      */
     private void creerListe(){
         ArrayList<Programme> lesProgrammes = controle.getLesProgrammes();
@@ -102,7 +82,7 @@ public class AccueilActivity extends AppCompatActivity {
                         if(editNom.getText().toString().isEmpty()){
                             Toast.makeText(getApplicationContext(), "Aucun nom n'a été entré.", Toast.LENGTH_SHORT).show();
                         }else {
-                            controle.creerProgramme(editNom.getText().toString(),AccueilActivity.this);
+                            controle.creerProgramme(editNom.getText().toString().trim()); //faire adapter.notifydatachange ou inserted
                             dialog.hide();
                         }
                     }
@@ -112,7 +92,7 @@ public class AccueilActivity extends AppCompatActivity {
         });
     }
 
-    private void creerProgrammeTest(Integer index){
+   /* private void creerProgrammeTest(Integer index){
         Programme programme = controle.getProgramme(index);
 
 
@@ -155,10 +135,10 @@ public class AccueilActivity extends AppCompatActivity {
                 Exercice exercice = entrainement.getLesExercices().get(j);
                 this.controle.creerSeance(i+j, j+1, 5,"Trop facile",i, exercice);
             }
-        }*/
+        }
 
 
-    }
+    }*/
 
 
 }
